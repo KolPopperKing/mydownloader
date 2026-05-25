@@ -1,14 +1,15 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware # הוספנו את זה
+from fastapi.middleware.cors import CORSMiddleware
 import yt_dlp
 
 app = FastAPI()
 
-# הוספת הרשאות CORS כדי שהאתר ב-GitHub יוכל לדבר עם השרת
+# זה החלק הקריטי שמונע את השגיאה שקיבלת
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # מאפשר גישה מכל אתר
-    allow_methods=["*"],
+    allow_origins=["*"],  # מאשר לכל אתר לפנות לשרת
+    allow_credentials=True,
+    allow_methods=["*"],  # מאשר את כל סוגי הפעולות (GET, POST וכו')
     allow_headers=["*"],
 )
 
