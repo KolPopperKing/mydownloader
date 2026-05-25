@@ -3,33 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>מוריד סרטונים מהיר</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; }
+        input { padding: 10px; width: 300px; margin-bottom: 10px; }
+        button { padding: 10px 20px; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <h2>מוריד סרטונים מהאתר שלי</h2>
-    <input type="text" id="urlInput" placeholder="הכנס לינק ליוטיוב כאן" style="width: 300px;">
-    <button onclick="getDownloadLink()">קבל לינק להורדה</button>
-    
-    <div id="result" style="margin-top: 20px;"></div>
+    <h2>מוריד סרטונים מהיר</h2>
+    <input type="text" id="urlInput" placeholder="הדבק לינק מיוטיוב כאן">
+    <button onclick="downloadVideo()">קבל לינק להורדה</button>
+    <p id="result"></p>
 
     <script>
-        async function getDownloadLink() {
+        async function downloadVideo() {
             const url = document.getElementById('urlInput').value;
-            const resultDiv = document.getElementById('result');
+            const res = document.getElementById('result');
+            res.innerText = "מעבד... (אם השרת ב-Render ישן, זה ייקח 30 שניות)";
             
-            resultDiv.innerText = "מעבד...";
-
             try {
-                // שימוש בכתובת החדשה שקיבלת מ-Render
+                // כאן אנחנו פונים לשרת שלך ב-Render
                 const response = await fetch(`https://mydownloader-1.onrender.com/download?url=${encodeURIComponent(url)}`);
                 const data = await response.json();
                 
                 if(data.download_url) {
-                    resultDiv.innerHTML = `<a href="${data.download_url}" target="_blank">לחץ כאן להורדת הקובץ</a>`;
+                    res.innerHTML = `<a href="${data.download_url}" target="_blank">לחץ כאן להורדת הקובץ</a>`;
                 } else {
-                    resultDiv.innerText = "משהו השתבש, נסה שוב.";
+                    res.innerText = "שגיאה: לא נמצא לינק.";
                 }
-            } catch (error) {
-                resultDiv.innerText = "שגיאה בחיבור לשרת.";
+            } catch (err) {
+                res.innerText = "שגיאה בחיבור לשרת, נסה שוב בעוד רגע.";
             }
         }
     </script>
