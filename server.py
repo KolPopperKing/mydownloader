@@ -4,18 +4,20 @@ import yt_dlp
 
 app = FastAPI()
 
-# זה החלק הקריטי שמונע את השגיאה שקיבלת
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # מאשר לכל אתר לפנות לשרת
-    allow_credentials=True,
-    allow_methods=["*"],  # מאשר את כל סוגי הפעולות (GET, POST וכו')
+    allow_origins=["*"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 @app.get("/download")
 def download(url: str):
-    ydl_opts = {'format': 'best', 'extractor_args': {'youtube': {'player_client': ['android']}}}
+    ydl_opts = {
+        'format': 'best',
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'extractor_args': {'youtube': {'player_client': ['web']}}
+    }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         return {"download_url": info['url']}
